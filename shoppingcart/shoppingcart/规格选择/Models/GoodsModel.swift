@@ -17,6 +17,6 @@ class GoodsModel: NSObject {
     
     var itemsList = NSArray() //属性列表
     var banners = NSArray() //商品轮播图
-    var sizeAttribute : NSMutableArray! = nil //属性组合列表
-    var price : GoodsPriceModel! = nil //价格信息-一般商品不同属性组合价格不同，会有个价格范围
+    var sizeAttribute : NSMutableArray! //属性组合列表
+    var price : GoodsPriceModel!  //价格信息-一般商品不同属性组合价格不同，会有个价格范围
 }

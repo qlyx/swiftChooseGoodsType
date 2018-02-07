@@ -20,7 +20,7 @@ class ChoseGoodsTypeAlert: UIView , UITableViewDataSource, UITableViewDelegate, 
     var sizeModel: SizeAttributeModel!
     
     var dataSource = NSMutableArray()
-    var model: GoodsModel?
+    var model: GoodsModel!
     var selectSize: ((_ sizeModelBlock: SizeAttributeModel) -> Void)? = nil
     
     init(frame: CGRect, andHeight height: CGFloat) {
@@ -103,7 +103,7 @@ class ChoseGoodsTypeAlert: UIView , UITableViewDataSource, UITableViewDelegate, 
         goodsInfo.initData(model: goodsModel)
         dataSource.removeAllObjects()
         //传入数据源创建多个属性
-        dataSource.addObjects(from: model?.itemsList as! [GoodsTypeModel])
+        dataSource.addObjects(from: model.itemsList as! [GoodsTypeModel])
         //此方法必须在_dataSource赋值后方可调用
         self.reloadGoodsInfo()
         tableview.reloadData()
@@ -135,15 +135,15 @@ class ChoseGoodsTypeAlert: UIView , UITableViewDataSource, UITableViewDelegate, 
         }
         let str = self.getSizeStr()
         sizeModel = nil
-        for sizemodel:SizeAttributeModel in model?.sizeAttribute as! [SizeAttributeModel] {
+        for sizemodel:SizeAttributeModel in model.sizeAttribute as! [SizeAttributeModel] {
             //遍历属性组合跟用户当前选择的是否一致
             if sizemodel.value == str as String {
                 sizeModel = sizemodel
-                if (countView.countTextField.text?.hashValue)! > sizeModel.stock.hashValue {
-                    countView.countTextField.text = "\(sizeModel.stock)"
+                if Int(countView.countTextField.text!)! > Int(sizeModel.stock)! {
+                    countView.countTextField.text = sizeModel.stock
                 }
-                else if (countView.countTextField.text?.hashValue)! < sizeModel.stock.hashValue {
-                    if countView.countTextField.text?.hashValue == 0 {
+                else if Int(countView.countTextField.text!)! < Int(sizeModel.stock)! {
+                    if Int(countView.countTextField.text!)! == 0 {
                         countView.countTextField.text = "1"
                     }
                 }
@@ -154,19 +154,20 @@ class ChoseGoodsTypeAlert: UIView , UITableViewDataSource, UITableViewDelegate, 
             }
         }
         //没找到匹配的，显示默认数据
-        goodsInfo.initData(model: model!)
+        goodsInfo.initData(model: model)
     }
     //MARK: 点击方法
     @objc func add() {
-        let count: Int = (countView.countTextField.text?.hashValue)!
+        let count: Int = Int(countView.countTextField.text!)!
         //如果有选好的属性就根据选好的属性库存判断，没选择就按总库存判断，数量不能超过库存
         if sizeModel != nil {
-            if count < sizeModel.stock.hashValue {
+            if count < Int(sizeModel.stock)! {
+                print(count + 1)
                 countView.countTextField.text = "\(count + 1)"
             }
         }
         else {
-            if count < (model?.totalStock.hashValue)! {
+            if count < Int(model.totalStock)! {
                 countView.countTextField.text = "\(count + 1)"
             }
         }
@@ -174,7 +175,7 @@ class ChoseGoodsTypeAlert: UIView , UITableViewDataSource, UITableViewDelegate, 
     }
     
     @objc func reduce() {
-        let count: Int = (countView.countTextField.text?.hashValue)!
+        let count: Int = Int(countView.countTextField.text!)!
         if count>1
         {
             countView.countTextField.text = "\(count - 1)"
@@ -182,9 +183,9 @@ class ChoseGoodsTypeAlert: UIView , UITableViewDataSource, UITableViewDelegate, 
     }
     
     @objc func sure() {
-        for model: GoodsTypeModel in dataSource as! [GoodsTypeModel]{
-            if model.selectIndex < 0 {
-                SVProgressHUD.show(with: "请选择\(model.typeName)")
+        for typemodel: GoodsTypeModel in dataSource as! [GoodsTypeModel]{
+            if typemodel.selectIndex < 0 {
+                SVProgressHUD.show(with: "请选择\(typemodel.typeName)")
                 
                 return
             }
@@ -196,7 +197,7 @@ class ChoseGoodsTypeAlert: UIView , UITableViewDataSource, UITableViewDelegate, 
             return
         }
         //判断库存
-        if sizeModel.stock.hashValue > 0 {
+        if Int(sizeModel.stock)! > 0 {
             if selectSize != nil {
                 sizeModel.count = (countView.countTextField.text! as NSString) as String
                 if self.selectSize != nil{
@@ -221,10 +222,10 @@ class ChoseGoodsTypeAlert: UIView , UITableViewDataSource, UITableViewDelegate, 
         return true
     }
     func textFieldDidEndEditing(_ textField: UITextField) {
-        let count: Int = (countView.countTextField.text?.hashValue)!
+        let count: Int = Int(countView.countTextField.text!)!
         if sizeModel != nil
         {
-            if count>sizeModel.stock.hashValue
+            if count>Int(sizeModel.stock)!
             {
                 SVProgressHUD.show(with:"数量超出库存")
                 countView.countTextField.text = sizeModel.stock
@@ -232,10 +233,10 @@ class ChoseGoodsTypeAlert: UIView , UITableViewDataSource, UITableViewDelegate, 
             
         }else
         {
-            if count>(model?.totalStock.hashValue)!
+            if count>Int(model.totalStock)!
             {
                 SVProgressHUD.show(with:"数量超出库存")
-                countView.countTextField.text = model?.totalStock
+                countView.countTextField.text = model.totalStock
             }
         }
     }
@@ -251,14 +252,18 @@ class ChoseGoodsTypeAlert: UIView , UITableViewDataSource, UITableViewDelegate, 
             cell = ChoosTypeTableViewCell.init(style: UITableViewCellStyle.default, reuseIdentifier: ID)
         }
         cell?.selectionStyle = UITableViewCellSelectionStyle.none
-        let typemodel: GoodsTypeModel? = dataSource[indexPath.row] as? GoodsTypeModel
-        tableView.rowHeight = (cell as! ChoosTypeTableViewCell).setData(model: typemodel!)
-        
-        (cell as! ChoosTypeTableViewCell).typeView!.selectButton = {(_ selectIndex:Int) -> Void in
-            //sizeModel 选择的属性模型
-            typemodel?.selectIndex = selectIndex
-            self.reloadGoodsInfo()
+        if indexPath.row<dataSource.count
+        {
+            let typemodel: GoodsTypeModel? = dataSource[indexPath.row] as? GoodsTypeModel
+            tableView.rowHeight = (cell as! ChoosTypeTableViewCell).setData(model: typemodel!)
+            
+            (cell as! ChoosTypeTableViewCell).typeView!.selectButton = {(_ selectIndex:Int) -> Void in
+                //sizeModel 选择的属性模型
+                typemodel?.selectIndex = selectIndex
+                self.reloadGoodsInfo()
+            }
         }
+        
         
         return cell!
     }

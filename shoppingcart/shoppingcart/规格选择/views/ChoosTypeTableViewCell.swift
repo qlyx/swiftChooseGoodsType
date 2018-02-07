@@ -9,12 +9,14 @@
 import UIKit
 
 class ChoosTypeTableViewCell: UITableViewCell {
-    var typeView :TypeView?
-    var _model = GoodsTypeModel()
+    var typeView :TypeView!
+    var _model : GoodsTypeModel!
     
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         backgroundColor = UIColor.white
+        typeView = TypeView(frame: CGRect(x:0,y:100,width:kWidth,height:10))
+        addSubview(typeView)
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -23,13 +25,7 @@ class ChoosTypeTableViewCell: UITableViewCell {
     
     func setData(model:GoodsTypeModel) -> CGFloat {
         _model = model
-        if (typeView == nil)
-        {
-            typeView = TypeView(frame: CGRect(x:0,y:100,width:kWidth,height:10))
-            typeView?.initWith(arr: model.typeArray, typeName: model.typeName, index: model.selectIndex)
-            typeView?.frame = CGRect(x:0,y:0,width:Int(kWidth),height:Int((typeView?.height)!))
-            addSubview(typeView!)
-        }
+        typeView.initWith(arr: model.typeArray, typeName: model.typeName, index: model.selectIndex)
         return (typeView?.height)!
     }
     

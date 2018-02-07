@@ -26,6 +26,9 @@ class TypeView: UIView {
     }
     func initWith(arr:NSArray,typeName:String,index:Int)
     {
+        while self.subviews.last != nil {
+            self.subviews.last?.removeFromSuperview()
+        }
         selectIndex = index
         typeArray = arr
         
@@ -70,7 +73,7 @@ class TypeView: UIView {
         line.backgroundColor = UIColor.lightGray
         addSubview(line)
        height = CGFloat(upY+11)
-        
+        self.frame = CGRect(x:0,y:0,width:Int(kWidth),height:Int(self.height))
     }
     
     @objc func touchbtn(button:UIButton) {
