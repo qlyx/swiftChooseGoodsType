@@ -2,5 +2,6 @@
 oc:https://github.com/qlyx/ChoseGoodsType
 
 使用tableview可以设置多个商品规格，刷新数据源即可
+
 ![image](https://github.com/qlyx/swiftChooseGoodsType/blob/master/chosetype.gif)
 

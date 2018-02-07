@@ -184,13 +184,14 @@ class ChoseGoodsTypeAlert: UIView , UITableViewDataSource, UITableViewDelegate, 
     @objc func sure() {
         for model: GoodsTypeModel in dataSource as! [GoodsTypeModel]{
             if model.selectIndex < 0 {
-                print("请选择\(model.typeName)")
+                SVProgressHUD.show(with: "请选择\(model.typeName)")
+                
                 return
             }
         }
         if dataSource.count == 0 {
             //该商品无规格
-            print("该商品无规格")
+            SVProgressHUD.show(with:"该商品无规格")
             hideView()
             return
         }
@@ -205,7 +206,7 @@ class ChoseGoodsTypeAlert: UIView , UITableViewDataSource, UITableViewDelegate, 
             hideView()
         }
         else {
-            print("该规格商品暂无库存无法加入购物车")
+            SVProgressHUD.show(with:"该规格商品暂无库存无法加入购物车")
         }
     }
     
@@ -225,7 +226,7 @@ class ChoseGoodsTypeAlert: UIView , UITableViewDataSource, UITableViewDelegate, 
         {
             if count>sizeModel.stock.hashValue
             {
-                print("数量超出库存")
+                SVProgressHUD.show(with:"数量超出库存")
                 countView.countTextField.text = sizeModel.stock
             }
             
@@ -233,7 +234,7 @@ class ChoseGoodsTypeAlert: UIView , UITableViewDataSource, UITableViewDelegate, 
         {
             if count>(model?.totalStock.hashValue)!
             {
-                print("数量超出库存")
+                SVProgressHUD.show(with:"数量超出库存")
                 countView.countTextField.text = model?.totalStock
             }
         }

@@ -57,9 +57,7 @@ class ViewController: UIViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    func changeLabelTextClosure(_ selectIndex:Int) -> Void {
-        print(selectIndex)
-    }
+    
     @IBAction func addCart(_ sender: Any) {
         
         let alert = ChoseGoodsTypeAlert(frame: CGRect(x: 0, y: 0, width: kWidth, height: kHeight), andHeight: kSize(width:500))
@@ -67,7 +65,8 @@ class ViewController: UIViewController {
         UIApplication.shared.keyWindow?.addSubview(alert)
         alert.selectSize = {(_ sizeModel: SizeAttributeModel) -> Void in
             //sizeModel 选择的属性模型
-            SVProgressHUD.show(with: "选择了:"+sizeModel.value)
+            SVProgressHUD.showSuccess(withStatus: "选择了:"+sizeModel.value)
+            
         }
         alert.initData(goodsModel: model)
         alert.showView()
