@@ -79,6 +79,7 @@ class ChoseGoodsTypeAlert: UIView , UITableViewDataSource, UITableViewDelegate, 
         fatalError("init(coder:) has not been implemented")
     }
     //消失
+    
     @objc func hideView() {
         self.tfresignFirstResponder()
         UIView.animate(withDuration: 0.25, animations: {
@@ -88,7 +89,7 @@ class ChoseGoodsTypeAlert: UIView , UITableViewDataSource, UITableViewDelegate, 
         }
     }
     //出现
-    @objc func showView() {
+     func showView() {
         self.alpha = 1
         tableview.alpha = 0
         UIView.animate(withDuration: 0.25, animations: {
